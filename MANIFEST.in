@@ -1,0 +1,4 @@
+include MANIFEST.in COPYING THANKS README NEWS src/liblzma*.h setup.cfg
+
+recursive-include tests *.py
+recursive-include tests/data *

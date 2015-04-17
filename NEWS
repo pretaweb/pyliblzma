@@ -1,0 +1,75 @@
+Version 0.5.3 - 13 Apr 2010, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+- update compression option names in API documentation.
+- fix segfault with LZMACompressor (#521975).
+- fix compress() & LZMACompressor.flush() finishing when there's still data left.
+  (#521975 & #537199)
+- Synchronize code with bz2module.c from python upstream:
+	o Issue #7205: Fix a possible deadlock when using a LZMAFile object from
+	  several threads at once.
+Version 0.5.2 - 26 Feb 2009, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Synchronize code with bz2module.c from python upstream:
+	o fixes various minor issues and bugs.
+	o support the context manager protocol (adds __enter__() & __enter__()).
+	o use Py_buffer.
+	o make code more in sync with bz2module.c for easier maintenance etc..
+
+Version 0.5.1 - 26 Jan 2009, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Fix huge memleaks in LZMADecompress() and also fix broken flush() and reset()
+  functions.
+- Fix various minor memleaks and bugs.
+- This will be the last version supporting python versions older than 2.6.
+
+Version 0.5.0 - 25 Jan 2009, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Add support for xz format (is now default format, xz/liblzma >= 4.999.8beta required).
+- Add support for extreme preset.
+- Add support for setting decoder memlimit.
+- Lots of fixes and cleanups.
+- Compression options are now passed as dictionary with keywords rather than
+  as keyword arguments directly.
+
+Version 0.4.1 - 12 Nov 2008, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Migrate code to use new and final(?) liblzma api (lzma_utils >= 4.999.6).
+
+Version 0.4.0 - 11 Sep 2008, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Add liblzma_file.[ch] implementing lzma_FILE*. (code much based on RPM's
+  lzdio.c)
+- renamed functions, classes, variables from liblzma* to lzma*.
+- Implement LZMAFile object. (as with much of the existing code, most of the
+  code is derived from Gustavo Niemeyer's bz2.c and adapted to lzma)
+- Repository has now been migrated from git to bzr and is now hosted and
+  publically available at http://launchpad.net/pyliblzma.
+
+Version 0.3.4 - 10 Sep 2008, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Add portability fixes for BSD. (from Anders F. Björklund)
+
+Version 0.3.3 - 10 Sep 2008, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Rename python module name from 'liblzma' to 'lzma' as giving the module same
+  name as the library would result in problems if the library were to be found
+  in $PWD or $PYTHONPATH.
+  Rationale behind module being named PylibLZMA and not PyLZMA is due to a
+  different PyLZMA already exists, it's python module name is 'pylzma',
+  so 'lzma' is available. :)
+- fix code formatting that was quite messed up due to mixed usage of tab
+  expansion and various tab length.
+- clean out compiler flag craziness.
+
+Version 0.3.2 - 28 May 2008, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Fix build with pre-C99.
+- Fix url.
+- Add some background to README.
+
+Version 0.3.1 - 23 May 2008, by Per Øyvind Karlsen <peroyvind@mandriva.org>
+
+- Fix so that destructor actually gets called when (de)compressor objects are
+  no longer used.
+- Add format option.
+- Improve setup.py so that proper source tarball can be generated with sdist.
+- Various minor fixes.
