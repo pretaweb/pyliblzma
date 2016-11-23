@@ -50,6 +50,13 @@ compile_args = []
 link_args = []
 libraries = ['lzma']
 
+p = subprocess.Popen("pkg-config --version", shell=True)
+p.communicate()[0]
+if p.returncode == 0:
+    HAS_PKG_CONFIG = True
+else:
+    HAS_PKG_CONFIG = False
+
 if get_default_compiler() in ('cygwin', 'emx', 'mingw32', 'unix'):
     warnflags = ['-Wall', '-Wextra', '-pedantic', '-Wswitch-enum', '-Wswitch-default']
     compile_args.extend(warnflags)
@@ -58,15 +65,23 @@ if get_default_compiler() in ('cygwin', 'emx', 'mingw32', 'unix'):
             shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True).stdout.read():
         compile_args.extend(['-std=c89', '-Wno-long-long'])
     
-    pc_cflags = subprocess.Popen("pkg-config --cflags liblzma", shell=True, stdout=subprocess.PIPE, close_fds=True).stdout.readline().strip()
-    if(pc_cflags):            
-        compile_args.extend(str(pc_cflags).split(' '))
+    if HAS_PKG_CONFIG:
+        p = subprocess.Popen("pkg-config --cflags liblzma", shell=True, stdout=subprocess.PIPE, close_fds=True)
+        pc_cflags = p.communicate()[0].strip()
+        if p.returncode == 1:
+            raise RuntimeError("System library 'liblzma' not installed properly.")
+        elif p.returncode == 0 and pc_cflags:
+            compile_args.extend(str(pc_cflags).split(' '))
     
-    pc_libs = subprocess.Popen("pkg-config --libs liblzma", shell=True, stdout=subprocess.PIPE, close_fds=True).stdout.readline().strip()
-    if(pc_libs):
-        pc_libs = str(pc_libs).split(' ')
-        pc_libs.remove(str('-llzma'))
-        link_args.extend(pc_libs)
+        p = subprocess.Popen("pkg-config --libs liblzma", shell=True, stdout=subprocess.PIPE, close_fds=True)
+        pc_libs = p.communicate()[0].strip()
+        if p.returncode == 1:
+            raise RuntimeError("System library 'liblzma' not installed properly.")
+        elif p.returncode == 0 and pc_libs:
+            pc_libs = str(pc_libs).split(' ')
+            pc_libs.remove(str('-llzma'))
+            link_args.extend(pc_libs)
+
 link_args.append('-lpython%i.%i' % sys.version_info[:2])
 
 extens=[Extension('lzma', c_files, extra_compile_args=compile_args, libraries=libraries, extra_link_args=link_args, define_macros=version_define)]
